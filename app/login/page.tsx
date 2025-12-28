@@ -29,7 +29,7 @@ export default function HomePage() {
   return (
     <div style={{ maxWidth: 900, margin: "40px auto", padding: 16 }}>
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1>SquadAssistant</h1>
+        <h1>SquadAssisstant</h1>
 
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
           {userEmail ? (

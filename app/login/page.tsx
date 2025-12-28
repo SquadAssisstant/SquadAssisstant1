@@ -1,79 +1,60 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [msg, setMsg] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+export default function HomePage() {
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [brainStatus, setBrainStatus] = useState<string>("(not checked yet)");
 
-  async function signInWithGoogle() {
-    setLoading(true);
-    setMsg(null);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
+  useEffect(() => {
+    // 1) Check if logged in
+    supabase.auth.getUser().then(({ data }) => {
+      setUserEmail(data.user?.email ?? null);
     });
-    if (error) setMsg(error.message);
-    setLoading(false);
-  }
 
-  async function signUpEmail() {
-    setLoading(true);
-    setMsg(null);
-    const { error } = await supabase.auth.signUp({ email, password });
-    setMsg(error ? error.message : "Signup OK. Now sign in.");
-    setLoading(false);
-  }
+    // 2) Check the brain endpoint from the UI
+    fetch("/api/brain/heroes")
+      .then((r) => r.json())
+      .then((j) => setBrainStatus(JSON.stringify(j)))
+      .catch((e) => setBrainStatus(`error: ${String(e)}`));
+  }, []);
 
-  async function signInEmail() {
-    setLoading(true);
-    setMsg(null);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setMsg(error ? error.message : "Signed in!");
-    setLoading(false);
+  async function logout() {
+    await supabase.auth.signOut();
+    window.location.reload();
   }
 
   return (
-    <div style={{ maxWidth: 420, margin: "40px auto", padding: 16 }}>
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12 }}>Login</h1>
+    <div style={{ maxWidth: 900, margin: "40px auto", padding: 16 }}>
+      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h1>SquadAssistant</h1>
 
-      <button
-        onClick={signInWithGoogle}
-        disabled={loading}
-        style={{ width: "100%", padding: 12, marginBottom: 16 }}
-      >
-        Continue with Google
-      </button>
+        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+          {userEmail ? (
+            <>
+              <span style={{ fontSize: 14 }}>Signed in as {userEmail}</span>
+              <button onClick={logout}>Log out</button>
+            </>
+          ) : (
+            <Link href="/login">Log in</Link>
+          )}
+        </div>
+      </header>
 
-      <div style={{ display: "grid", gap: 8 }}>
-        <input
-          placeholder="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ padding: 12 }}
-        />
-        <input
-          placeholder="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ padding: 12 }}
-        />
+      <hr style={{ margin: "16px 0" }} />
 
-        <button onClick={signUpEmail} disabled={loading} style={{ padding: 12 }}>
-          Sign up (email + password)
-        </button>
-        <button onClick={signInEmail} disabled={loading} style={{ padding: 12 }}>
-          Sign in (email + password)
-        </button>
+      <h2>Brain connectivity</h2>
+      <p style={{ fontFamily: "monospace", whiteSpace: "pre-wrap" }}>
+        {brainStatus}
+      </p>
 
-        {msg && <p style={{ marginTop: 8 }}>{msg}</p>}
-      </div>
+      <hr style={{ margin: "16px 0" }} />
+
+      <p>
+        This confirms the UI, auth, and brain API are connected.
+      </p>
     </div>
   );
 }

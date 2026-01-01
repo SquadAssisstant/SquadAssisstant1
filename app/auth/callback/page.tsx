@@ -9,13 +9,12 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     (async () => {
-      // Supabase JS reads the URL hash/query and finalizes the session automatically.
+      // This reads the URL and finalizes the session
       const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        router.replace("/");
-      } else {
-        router.replace("/login");
-      }
+
+      // Either way, go home. The home page will show logged-in state if successful.
+      router.replace("/");
+      router.refresh();
     })();
   }, [router]);
 

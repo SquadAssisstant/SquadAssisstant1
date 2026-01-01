@@ -11,27 +11,20 @@ export default function HomePage() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [brainStatus, setBrainStatus] = useState<string>('(not checked yet)');
   const [loadingAuth, setLoadingAuth] = useState(false);
-
-  // Simple guest flag (client-only)
   const [isGuest, setIsGuest] = useState(false);
 
   useEffect(() => {
-    // Restore guest mode after refresh (optional)
     try {
-      const g = sessionStorage.getItem("SA_GUEST");
-      setIsGuest(g === "1");
+      setIsGuest(sessionStorage.getItem("SA_GUEST") === "1");
     } catch {}
 
-    // 1) Read current auth user
     supabase.auth.getUser().then(({ data }) => {
       setUserEmail(data.user?.email ?? null);
     });
 
-    // Keep UI in sync if auth changes
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       setUserEmail(session?.user?.email ?? null);
       if (session?.user) {
-        // If you log in, turn off guest mode
         try {
           sessionStorage.removeItem("SA_GUEST");
         } catch {}
@@ -40,7 +33,6 @@ export default function HomePage() {
       router.refresh();
     });
 
-    // 2) Check brain endpoint
     fetch("/api/brain/heroes")
       .then((r) => r.json())
       .then((j) => setBrainStatus(JSON.stringify(j)))
@@ -52,10 +44,11 @@ export default function HomePage() {
   }, [router]);
 
   async function loginWithGoogle() {
+    // This alert is temporary for debugging.
+    alert("Log in clicked");
+
     try {
       setLoadingAuth(true);
-
-      // IMPORTANT: This starts OAuth immediately from the main page.
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -73,6 +66,8 @@ export default function HomePage() {
   }
 
   function continueAsGuest() {
+    alert("Continue as Guest clicked");
+
     try {
       sessionStorage.setItem("SA_GUEST", "1");
     } catch {}
@@ -81,14 +76,11 @@ export default function HomePage() {
 
   async function logout() {
     await supabase.auth.signOut();
-
-    // Make it obvious to the user that they're logged out
     try {
       sessionStorage.removeItem("SA_GUEST");
     } catch {}
     setIsGuest(false);
 
-    // Force UI refresh + return home
     router.replace("/");
     router.refresh();
   }
@@ -120,40 +112,53 @@ export default function HomePage() {
 
       <div style={{ marginTop: 14, borderTop: "1px solid rgba(0,0,0,0.1)" }} />
 
-      {/* Chat */}
-      <div style={{ marginTop: 18 }}>
-        <ChatWindow
-          endpoint="api/chat"
-          emoji="🤖"
-          placeholder="Ask me about Last War..."
-          emptyStateComponent={
-            <div style={{ opacity: 0.75 }}>
-              {isLoggedIn
-                ? `Signed in as ${userEmail}`
-                : isGuest
-                ? "Guest mode (no account saved)"
-                : "Log in or continue as guest to start."}
-            </div>
-          }
-        />
-      </div>
-
-      {/* Buttons BELOW the chat bubble, only when logged out */}
-      {!isLoggedIn && (
-        <div style={{ marginTop: 12, display: "flex", gap: 10, justifyContent: "center" }}>
-          <button
-            onClick={loginWithGoogle}
-            disabled={loadingAuth}
-            style={{ padding: "10px 14px", minWidth: 160 }}
-          >
-            {loadingAuth ? "Starting login..." : "Log in"}
-          </button>
-
-          <button onClick={continueAsGuest} style={{ padding: "10px 14px", minWidth: 160 }}>
-            Continue as Guest
-          </button>
+      {/* IMPORTANT: This wrapper prevents ChatWindow overlays from blocking clicks */}
+      <div style={{ position: "relative", marginTop: 18 }}>
+        {/* Chat */}
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <ChatWindow
+            endpoint="api/chat"
+            emoji="🤖"
+            placeholder="Ask me about Last War..."
+            emptyStateComponent={
+              <div style={{ opacity: 0.75 }}>
+                {isLoggedIn
+                  ? `Signed in as ${userEmail}`
+                  : isGuest
+                  ? "Guest mode (no account saved)"
+                  : "Log in or continue as guest to start."}
+              </div>
+            }
+          />
         </div>
-      )}
+
+        {/* Buttons BELOW the chat bubble, forced on top */}
+        {!isLoggedIn && (
+          <div
+            style={{
+              marginTop: 12,
+              display: "flex",
+              gap: 10,
+              justifyContent: "center",
+              position: "relative",
+              zIndex: 9999, // <- key
+              pointerEvents: "auto", // <- key
+            }}
+          >
+            <button
+              onClick={loginWithGoogle}
+              disabled={loadingAuth}
+              style={{ padding: "10px 14px", minWidth: 160 }}
+            >
+              {loadingAuth ? "Starting login..." : "Log in"}
+            </button>
+
+            <button onClick={continueAsGuest} style={{ padding: "10px 14px", minWidth: 160 }}>
+              Continue as Guest
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

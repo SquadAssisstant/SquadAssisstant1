@@ -38,10 +38,16 @@ function LoginInner() {
   }
 
   async function continueAsGuest() {
-    alert(
-      "Guest mode: all actions are usable, but your data will NOT be saved. Session ends when this tab is refreshed, closed, or the browser closes."
-    );
-    router.push("/"); // stays on main chat page
+  alert(
+    "Guest mode: all actions are usable, but nothing will be saved. Session ends if you refresh, close the tab, or close the browser."
+  );
+
+  // Session-only flag (dies on refresh/close)
+  sessionStorage.setItem("guest_mode", "1");
+
+  router.push("/");
+}
+
   }
 
   return (

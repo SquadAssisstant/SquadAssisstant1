@@ -1,22 +1,24 @@
 export const dynamic = "force-dynamic";
 "use client";
 
-import { useMemo, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 
-export default function LoginPage() {
-  const params = useSearchParams();
+function LoginInner() {
   const router = useRouter();
-
-  const mode = useMemo(() => (params.get("mode") === "signup" ? "signup" : "login"), [params]);
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const searchParams = useSearchParams();
 
   const [msg, setMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // If you were using search params for anything, this keeps it safe:
+  useEffect(() => {
+    const error = searchParams.get("error");
+    const errorDesc = searchParams.get("error_description");
+    if (error || errorDesc) setMsg(`${error ?? ""} ${errorDesc ?? ""}`.trim());
+  }, [searchParams]);
 
   async function signInWithGoogle() {
     setLoading(true);
@@ -33,86 +35,47 @@ export default function LoginPage() {
     setLoading(false);
   }
 
-  async function signUpEmail() {
-    setLoading(true);
-    setMsg(null);
-
-    const { error } = await supabase.auth.signUp({ email, password });
-    setMsg(error ? error.message : "Signup OK. Now sign in (or check email if confirmation is enabled).");
-
-    setLoading(false);
-  }
-
-  async function signInEmail() {
-    setLoading(true);
-    setMsg(null);
-
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      setMsg(error.message);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(false);
-    router.replace("/");
-    router.refresh();
+  async function continueAsGuest() {
+    alert(
+      "Guest mode: all actions are usable, but your data will NOT be saved. Session ends when this tab is refreshed, closed, or the browser closes."
+    );
+    router.push("/"); // stays on main chat page
   }
 
   return (
-    <div style={{ maxWidth: 520, margin: "48px auto", padding: 16 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-        <h1 style={{ margin: 0 }}>{mode === "signup" ? "Sign up" : "Log in"}</h1>
-        <Link href="/" style={{ fontSize: 13 }}>
+    <div style={{ maxWidth: 900, margin: "40px auto", padding: 16 }}>
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontSize: 14, opacity: 0.8 }}>
+          Brain connectivity:
+        </div>
+        <pre style={{ fontFamily: "monospace", whiteSpace: "pre-wrap" }}>
+          {"{ ok: true, where: \"/api/brain/heroes\" }"}
+        </pre>
+      </div>
+
+      <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 40 }}>
+        <button onClick={signInWithGoogle} disabled={loading} style={{ padding: 12 }}>
+          Log in
+        </button>
+
+        <button onClick={continueAsGuest} style={{ padding: 12 }}>
+          Continue as Guest
+        </button>
+
+        <Link href="/" style={{ padding: 12 }}>
           Back
         </Link>
       </div>
 
-      <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
-        <button onClick={signInWithGoogle} disabled={loading} style={{ padding: 12 }}>
-          Continue with Google
-        </button>
-
-        <div style={{ opacity: 0.7, fontSize: 13, textAlign: "center" }}>or</div>
-
-        <input
-          placeholder="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ padding: 12 }}
-        />
-        <input
-          placeholder="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ padding: 12 }}
-        />
-
-        {mode === "signup" ? (
-          <button onClick={signUpEmail} disabled={loading} style={{ padding: 12 }}>
-            Sign up (email + password)
-          </button>
-        ) : (
-          <button onClick={signInEmail} disabled={loading} style={{ padding: 12 }}>
-            Log in (email + password)
-          </button>
-        )}
-
-        <div style={{ fontSize: 13, opacity: 0.8 }}>
-          {mode === "signup" ? (
-            <>
-              Already have an account? <Link href="/login?mode=login">Log in</Link>
-            </>
-          ) : (
-            <>
-              Need an account? <Link href="/login?mode=signup">Sign up</Link>
-            </>
-          )}
-        </div>
-
-        {msg && <div style={{ marginTop: 6, fontSize: 13 }}>{msg}</div>}
-      </div>
+      {msg && <p style={{ marginTop: 12 }}>{msg}</p>}
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<p style={{ padding: 16 }}>Loading login…</p>}>
+      <LoginInner />
+    </Suspense>
   );
 }

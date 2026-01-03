@@ -1,1 +1,69 @@
-keep
+{
+  "version": 1,
+  "updatedAt": "2026-01-02",
+  "squad": "Tank",
+  "rarity": "UR",
+  "heroes": [
+    {
+      "id": "kimberly",
+      "name": "Kimberly",
+      "role": "Burst Damage Dealer",
+      "purpose": "High damage output through energy-based skills; excels at quickly removing priority targets once skills fire.",
+      "skills": [
+        { "name": "Barrage Strike II" },
+        { "name": "Energy Boost" },
+        { "name": "Energy Assault II" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    },
+    {
+      "id": "murphy",
+      "name": "Murphy",
+      "role": "Defensive Tank / Damage Mitigation",
+      "purpose": "Absorbs damage, increases survivability of the squad, and stabilizes extended fights.",
+      "skills": [
+        { "name": "Ironclad Barrier II" },
+        { "name": "Stand Firm" },
+        { "name": "Cannon Fire II" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    },
+    {
+      "id": "williams",
+      "name": "Williams",
+      "role": "Balanced Frontline Controller",
+      "purpose": "Provides survivability, control effects, and steady pressure across many squad compositions.",
+      "skills": [
+        { "name": "Iron Will" },
+        { "name": "All-Around Armor" },
+        { "name": "Stun Bomb" },
+        { "sharedSkillId": "super_sensing" }
+      ],
+      "notes": ["Baseline UR hero (not seasonal)."]
+    },
+    {
+      "id": "marshall",
+      "name": "Marshall",
+      "role": "Squad Buffer / Commander",
+      "purpose": "Enhances squad performance through command-based buffs and combat pacing.",
+      "skills": [
+        { "name": "Command Strategy" },
+        { "name": "Rapid Start" },
+        { "name": "Command: Focus Fire" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    },
+    {
+      "id": "stetmann",
+      "name": "Stetmann",
+      "role": "Burst DPS (Tank Slot)",
+      "purpose": "Delivers high spike damage through electrical and critical mechanics.",
+      "skills": [
+        { "name": "Lightning Rush" },
+        { "name": "Critical Charge" },
+        { "name": "Orb Lightning" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    }
+  ]
+}

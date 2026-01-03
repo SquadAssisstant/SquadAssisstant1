@@ -5,32 +5,20 @@
     {
       "id": "super_sensing",
       "name": "Super Sensing",
-      "kind": "passive_shared",
+      "type": "passive_shared",
       "description": "Increases HP, Attack, and Defense by 20%.",
       "effects": [
-        {
-          "stat": "hp",
-          "type": "percent",
-          "value": 0.2
-        },
-        {
-          "stat": "attack",
-          "type": "percent",
-          "value": 0.2
-        },
-        {
-          "stat": "defense",
-          "type": "percent",
-          "value": 0.2
-        }
+        { "stat": "hp", "modifier": "percent", "value": 0.20 },
+        { "stat": "attack", "modifier": "percent", "value": 0.20 },
+        { "stat": "defense", "modifier": "percent", "value": 0.20 }
       ],
       "gating": {
-        "unlocksAtStar": null,
-        "notes": "User reports it unlocks at a certain star level (exact star TBD)."
+        "requiresStarLevel": null,
+        "notes": "Unlocks at a specific star level (exact value TBD)."
       },
       "scaling": {
         "type": "fixed",
-        "notes": "Effect is fixed 20% and does not scale by level; only unlock-gated."
+        "notes": "Effect does not scale by skill level."
       }
     }
   ]

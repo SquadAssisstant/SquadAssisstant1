@@ -1,1 +1,68 @@
-keep
+{
+  "version": 1,
+  "updatedAt": "2026-01-02",
+  "squad": "Missile",
+  "rarity": "UR",
+  "heroes": [
+    {
+      "id": "tesla",
+      "name": "Tesla",
+      "role": "Control DPS (Electrical)",
+      "purpose": "Applies disruption and chained electrical damage.",
+      "skills": [
+        { "name": "Electric Grid Lockdown" },
+        { "name": "Electric Power Boost" },
+        { "name": "Lightning Chain II" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    },
+    {
+      "id": "swift",
+      "name": "Swift",
+      "role": "Precision DPS",
+      "purpose": "Targets weak points and finishes priority enemies.",
+      "skills": [
+        { "name": "Weakness Targeting" },
+        { "name": "Precise Guidance" },
+        { "name": "Targeted Strike II" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    },
+    {
+      "id": "mcgregor",
+      "name": "McGregor",
+      "role": "Bruiser / Frontline Support",
+      "purpose": "Adds survivability and pressure to missile squads.",
+      "skills": [
+        { "name": "Unyielding Heart" },
+        { "name": "HP Boost" },
+        { "name": "Forward Rush" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    },
+    {
+      "id": "adam",
+      "name": "Adam",
+      "role": "Counter Tank / Reactive Defense",
+      "purpose": "Punishes attackers through counter mechanics.",
+      "skills": [
+        { "name": "Counter Defense" },
+        { "name": "Spike Armor" },
+        { "name": "Mk43 Vehicle Mounted Machine Gun" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    },
+    {
+      "id": "fiona",
+      "name": "Fiona",
+      "role": "High Burst AoE DPS",
+      "purpose": "Delivers heavy damage spikes, especially against multiple enemies.",
+      "skills": [
+        { "name": "Atomic Blast" },
+        { "name": "Ballistic Boost" },
+        { "name": "Double Trajectory" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    }
+  ]
+}

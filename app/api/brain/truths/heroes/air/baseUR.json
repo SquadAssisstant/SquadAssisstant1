@@ -1,1 +1,69 @@
-keep
+{
+  "version": 1,
+  "updatedAt": "2026-01-02",
+  "squad": "Air",
+  "rarity": "UR",
+  "heroes": [
+    {
+      "id": "dva",
+      "name": "Dva",
+      "role": "Sustained DPS",
+      "purpose": "Provides reliable, consistent damage output over time.",
+      "skills": [
+        { "name": "Steel Barrage" },
+        { "name": "Precision Upgrade" },
+        { "name": "Vertex Missile II" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    },
+    {
+      "id": "carlie",
+      "name": "Carlie",
+      "role": "AoE Damage Dealer",
+      "purpose": "Deals area damage effective against clustered or swarm enemies.",
+      "skills": [
+        { "name": "Inferno Blaze" },
+        { "name": "Energy Adaption II" },
+        { "name": "Dual String Rocket" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    },
+    {
+      "id": "morrison",
+      "name": "Morrison",
+      "role": "Armor-Penetration DPS",
+      "purpose": "Breaks through high-defense targets with focused fire.",
+      "skills": [
+        { "name": "Armor Piercing Shot" },
+        { "name": "Full Firepower" },
+        { "name": "Full Auto Machine Gun" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    },
+    {
+      "id": "lucious",
+      "name": "Lucious",
+      "aliases": ["Lucius"],
+      "role": "Hybrid DPS / Survivability",
+      "purpose": "Balances offense with defensive traits, making him harder to eliminate.",
+      "skills": [
+        { "name": "Knight's Spirit" },
+        { "name": "Silver Armor" },
+        { "name": "Lightning Triple Strike" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    },
+    {
+      "id": "schuyler",
+      "name": "Schuyler",
+      "role": "Control / Disruption DPS",
+      "purpose": "Disrupts enemy actions while dealing meaningful damage.",
+      "skills": [
+        { "name": "Blast Frenzy" },
+        { "name": "Antimatter Armor" },
+        { "name": "Disruptive Beam" },
+        { "sharedSkillId": "super_sensing" }
+      ]
+    }
+  ]
+}

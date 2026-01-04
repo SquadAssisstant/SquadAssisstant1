@@ -7,13 +7,19 @@ export const dynamic = "force-dynamic";
 
 const ALLOWED = new Set(["tank", "air", "missile"]);
 
-export async function GET(
-  _req: Request,
-  { params }: { params: { squad: string } }
-) {
-  const squad = (params.squad || "").toLowerCase();
+type RouteContext = {
+  params: {
+    squad: string;
+  };
+};
 
-  if (!ALLOWED.has(squad)) {
+export async function GET(
+  _request: Request,
+  context: RouteContext
+) {
+  const squad = context.params.squad?.toLowerCase();
+
+  if (!squad || !ALLOWED.has(squad)) {
     return NextResponse.json(
       { ok: false, error: "Invalid squad. Use tank, air, or missile." },
       { status: 400 }
@@ -35,14 +41,18 @@ export async function GET(
     const raw = await fs.readFile(filePath, "utf-8");
     const json = JSON.parse(raw);
 
-    return NextResponse.json({ ok: true, squad, data: json });
-  } catch (e: any) {
+    return NextResponse.json({
+      ok: true,
+      squad,
+      data: json,
+    });
+  } catch (err: any) {
     return NextResponse.json(
       {
         ok: false,
         squad,
-        error: "Failed to load truths JSON for this squad.",
-        detail: String(e?.message ?? e),
+        error: "Failed to load squad data",
+        detail: err?.message ?? String(err),
       },
       { status: 500 }
     );

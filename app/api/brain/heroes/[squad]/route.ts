@@ -7,19 +7,15 @@ export const dynamic = "force-dynamic";
 
 const ALLOWED = new Set(["tank", "air", "missile"]);
 
-type RouteContext = {
-  params: {
-    squad: string;
-  };
-};
-
 export async function GET(
   _request: Request,
-  context: RouteContext
+  ctx: { params: Promise<{ squad: string }> }
 ) {
-  const squad = context.params.squad?.toLowerCase();
+  // Next 15 treats params as async; await works even if it’s not truly a Promise at runtime
+  const { squad } = await ctx.params;
+  const squadKey = (squad || "").toLowerCase();
 
-  if (!squad || !ALLOWED.has(squad)) {
+  if (!ALLOWED.has(squadKey)) {
     return NextResponse.json(
       { ok: false, error: "Invalid squad. Use tank, air, or missile." },
       { status: 400 }
@@ -34,23 +30,19 @@ export async function GET(
       "brain",
       "truths",
       "heroes",
-      squad,
+      squadKey,
       "baseUR.json"
     );
 
     const raw = await fs.readFile(filePath, "utf-8");
-    const json = JSON.parse(raw);
+    const data = JSON.parse(raw);
 
-    return NextResponse.json({
-      ok: true,
-      squad,
-      data: json,
-    });
+    return NextResponse.json({ ok: true, squad: squadKey, data });
   } catch (err: any) {
     return NextResponse.json(
       {
         ok: false,
-        squad,
+        squad: squadKey,
         error: "Failed to load squad data",
         detail: err?.message ?? String(err),
       },
